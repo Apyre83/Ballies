@@ -1,5 +1,5 @@
 #include "Ball.hpp"
-#include "Kamlot.h"
+#include "Ballies.h"
 
 Ball::Ball(float x, float y, float radius, float gravity, float bounce, sf::Color color)
     : x(x), y(y), radius(radius), gravity(gravity), bounce(bounce), isHoldingBall(false), velocity(0, 0) {

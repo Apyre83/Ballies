@@ -7,7 +7,7 @@ MY_OBJECTS =  $(MY_SOURCES:.cpp=.o)
 
 INCLUDES = includes/
 
-NAME = kamlot
+NAME = ballies
 
 FLAGS =
 

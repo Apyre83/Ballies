@@ -1,4 +1,4 @@
-#include "Kamlot.h"
+#include "Ballies.h"
 
 std::vector<sf::RectangleShape> parseConfFile(const std::string& file) {
     std::ifstream confFile(file);
