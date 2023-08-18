@@ -20,7 +20,7 @@ You can compile and run the game using the provided `Makefile`. Here's how you c
 
 ```bash
 $ make
-$ ./Ballies
+$ ./bin/ballies
 ```
 
 ## Dependencies
