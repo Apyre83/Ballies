@@ -3,6 +3,7 @@ CLEAR		=	"\033[K"
 
 
 MY_SOURCES	=	src/main.cpp	\
+				src/init.cpp	\
 				src/Ball.cpp
 
 
