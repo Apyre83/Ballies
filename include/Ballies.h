@@ -30,3 +30,5 @@
 #define GRAVITY 2.0f
 
 #endif
+
+#define RECTANGLE_WIDTH 15.0f
