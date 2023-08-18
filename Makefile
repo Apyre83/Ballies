@@ -30,6 +30,7 @@ all: $(NAME)
 $(NAME): $(LIB) $(MY_OBJECTS)
 	@clear
 	@g++ $(MY_OBJECTS) -o $(NAME) -lsfml-graphics -lsfml-window -lsfml-system
+	@mkdir -p bin
 	@mv $(NAME) bin/
 	@echo "\033[0;32m ██████╗ ██████╗ ███╗   ███╗██████╗ ██╗██╗     ███████╗██████╗     ██╗"
 	@echo "██╔════╝██╔═══██╗████╗ ████║██╔══██╗██║██║     ██╔════╝██╔══██╗    ██║"

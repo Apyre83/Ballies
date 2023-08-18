@@ -34,5 +34,5 @@
 #define RECTANGLE_WIDTH 15.0f
 
 
-void	initializeGame(sf::RenderWindow& window, std::vector<Ball>& balls);
+void	initializeGame(sf::RenderWindow& window, std::vector<Ball>& balls, bool raceMode);
 std::vector<sf::RectangleShape>	parseConfFile(const std::string& file);

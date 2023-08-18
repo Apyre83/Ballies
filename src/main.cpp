@@ -1,6 +1,6 @@
 #include "Ballies.h"
 
-void	calculateBallsPosition(std::vector<Ball>& balls, float dt, std::vector<sf::RectangleShape>& obstacles, sf::RenderWindow& window)
+void	calculateBallsPosition(std::vector<Ball>& balls, float dt, std::vector<sf::RectangleShape>& obstacles, sf::RenderWindow& window, unsigned int &lastBallNumber)
 {
 	for (auto& ball : balls) {
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
@@ -24,13 +24,33 @@ void	calculateBallsPosition(std::vector<Ball>& balls, float dt, std::vector<sf::
 		}
 		else
 		{
-			ball.calculateVelocity(obstacles, window);
+			ball.calculateVelocity(obstacles, window, lastBallNumber);
 			ball.update(dt);
 		}
 	}
 }
 
-void handleEvents(sf::RenderWindow& window, bool& isPaused, std::vector<sf::RectangleShape>& obstacles, bool& isDrawing, sf::Vector2i& startPosition, std::vector<Ball>& balls, bool &raceMode) {
+
+void	drawArrow(sf::RenderWindow& window, sf::RectangleShape& arrowShaft, sf::ConvexShape& arrowHead)
+{
+	sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+	sf::Vector2f arrowShaftSize = arrowShaft.getSize();
+	sf::Vector2f arrowHeadSize = arrowHead.getPoint(1) - arrowHead.getPoint(0);
+
+	arrowShaft.setPosition(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y));
+	arrowShaft.setRotation(0);
+	arrowShaft.setFillColor(sf::Color::White);
+
+	arrowHead.setPosition(static_cast<float>(mousePos.x + arrowShaftSize.x), static_cast<float>(mousePos.y + arrowShaftSize.y / 2 - arrowHeadSize.y / 2));
+	arrowHead.setRotation(0);
+	arrowHead.setFillColor(sf::Color::White);
+
+	window.draw(arrowShaft);
+	window.draw(arrowHead);
+}
+
+
+void	handleEvents(sf::RenderWindow& window, bool& isPaused, std::vector<sf::RectangleShape>& obstacles, bool& isDrawing, sf::Vector2i& startPosition, std::vector<Ball>& balls, bool &raceMode, unsigned int &lastBallNumber) {
     sf::Event event;
     while (window.pollEvent(event)) {
         if (event.type == sf::Event::Closed ||
@@ -39,7 +59,8 @@ void handleEvents(sf::RenderWindow& window, bool& isPaused, std::vector<sf::Rect
         }
         if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::R) {
             isPaused = false;
-            initializeGame(window, balls);
+			lastBallNumber = 1;
+            initializeGame(window, balls, raceMode);
         }
         if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
             startPosition = sf::Mouse::getPosition(window);
@@ -71,28 +92,45 @@ void handleEvents(sf::RenderWindow& window, bool& isPaused, std::vector<sf::Rect
         }
 		if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::M) {
 			raceMode = !raceMode;
+			isPaused = false;
+			lastBallNumber = 1;
+			initializeGame(window, balls, raceMode);
 		}
     }
 }
 
+#include <unistd.h>
 
 int main(void) {
+
+	Ball::loadFont("res/race.ttf");
 
     sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
     sf::RenderWindow window(desktop, "Kamlot", sf::Style::Fullscreen);
 
     std::vector<sf::RectangleShape> obstacles = parseConfFile("conf");
     std::vector<Ball> balls;
+	
 
-    initializeGame(window, balls);
+	sf::RectangleShape arrowShaft;
+	arrowShaft.setSize(sf::Vector2f(100, 10));
+
+	sf::ConvexShape arrowHead;
+	arrowHead.setPointCount(3);
+	arrowHead.setPoint(0, sf::Vector2f(0, 0));
+	arrowHead.setPoint(1, sf::Vector2f(30, 10));
+	arrowHead.setPoint(2, sf::Vector2f(0, 20));
+
 
     sf::Clock clock;
 
-	bool isDrawing = false;
-	sf::Vector2i startPosition;
-	
-	bool	isPaused = false;
 
+	bool			isDrawing = false;
+	bool			isPaused = false;
+	unsigned int	lastBallNumber = 1;
+
+
+	sf::Vector2i startPosition;
 	
 
 	sf::Font font;
@@ -120,9 +158,12 @@ int main(void) {
 	raceModeText.setPosition(10, 40);
 
 
+    initializeGame(window, balls, raceMode);
+
+
     while (window.isOpen()) {
 
-        handleEvents(window, isPaused, obstacles, isDrawing, startPosition, balls, raceMode);
+        handleEvents(window, isPaused, obstacles, isDrawing, startPosition, balls, raceMode, lastBallNumber);
 
 
 		if (isDrawing) {
@@ -153,7 +194,7 @@ int main(void) {
 
 
 		if (!isPaused) {
-			calculateBallsPosition(balls, dt, obstacles, window);
+			calculateBallsPosition(balls, dt, obstacles, window, lastBallNumber);
 		}
 
 
@@ -165,9 +206,9 @@ int main(void) {
 		else
 			raceModeText.setString("MODE: Sandbox");
 
-
 		window.draw(raceModeText);
 		window.draw(fpsText);
+
 
         for (auto& ball : balls)
             ball.draw(window);
@@ -175,7 +216,10 @@ int main(void) {
             window.draw(obstacle);
         }
 
+		//drawArrow(window, arrowShaft, arrowHead);
+
         window.display();
+
     }
 
     return 0;
