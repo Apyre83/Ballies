@@ -30,7 +30,7 @@ void	calculateBallsPosition(std::vector<Ball>& balls, float dt, std::vector<sf::
 	}
 }
 
-void handleEvents(sf::RenderWindow& window, bool& isPaused, std::vector<sf::RectangleShape>& obstacles, bool& isDrawing, sf::Vector2i& startPosition, std::mt19937& gen, std::vector<Ball>& balls) {
+void handleEvents(sf::RenderWindow& window, bool& isPaused, std::vector<sf::RectangleShape>& obstacles, bool& isDrawing, sf::Vector2i& startPosition, std::vector<Ball>& balls, bool &raceMode) {
     sf::Event event;
     while (window.pollEvent(event)) {
         if (event.type == sf::Event::Closed ||
@@ -39,7 +39,7 @@ void handleEvents(sf::RenderWindow& window, bool& isPaused, std::vector<sf::Rect
         }
         if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::R) {
             isPaused = false;
-            initializeGame(window, balls, gen);
+            initializeGame(window, balls);
         }
         if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
             startPosition = sf::Mouse::getPosition(window);
@@ -69,13 +69,14 @@ void handleEvents(sf::RenderWindow& window, bool& isPaused, std::vector<sf::Rect
         if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space) {
             isPaused = !isPaused;
         }
+		if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::M) {
+			raceMode = !raceMode;
+		}
     }
 }
 
 
 int main(void) {
-    std::random_device rd;
-    std::mt19937 gen(rd());
 
     sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
     sf::RenderWindow window(desktop, "Kamlot", sf::Style::Fullscreen);
@@ -83,7 +84,7 @@ int main(void) {
     std::vector<sf::RectangleShape> obstacles = parseConfFile("conf");
     std::vector<Ball> balls;
 
-    initializeGame(window, balls, gen);
+    initializeGame(window, balls);
 
     sf::Clock clock;
 
@@ -111,9 +112,17 @@ int main(void) {
 	fpsText.setPosition(10, 10);
 
 
+	bool	raceMode = false;
+	sf::Text raceModeText;
+	raceModeText.setFont(font);
+	raceModeText.setCharacterSize(24);
+	raceModeText.setFillColor(sf::Color::White);
+	raceModeText.setPosition(10, 40);
+
+
     while (window.isOpen()) {
 
-        handleEvents(window, isPaused, obstacles, isDrawing, startPosition, gen, balls);
+        handleEvents(window, isPaused, obstacles, isDrawing, startPosition, balls, raceMode);
 
 
 		if (isDrawing) {
@@ -150,7 +159,16 @@ int main(void) {
 
         window.clear();
 
+
+		if (raceMode == true)
+			raceModeText.setString("MODE: Race");
+		else
+			raceModeText.setString("MODE: Sandbox");
+
+
+		window.draw(raceModeText);
 		window.draw(fpsText);
+
         for (auto& ball : balls)
             ball.draw(window);
         for (const auto& obstacle : obstacles) {

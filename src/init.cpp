@@ -1,8 +1,10 @@
 #include "Ballies.h"
 
 
-void initializeGame(sf::RenderWindow& window, std::vector<Ball>& balls, std::mt19937& gen) {
-    //float x = window.getSize().x / 2.0f;
+void initializeGame(sf::RenderWindow& window, std::vector<Ball>& balls) {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
     float y = window.getSize().y / 2.0f;
 
     std::uniform_int_distribution<> distrib(0, 1920);
