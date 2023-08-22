@@ -5,7 +5,7 @@ Ball::Ball(float x, float y, float radius, float gravity, float bounce, sf::Colo
     : x(x), y(y), radius(radius), gravity(gravity), bounce(bounce), initialColor(color), raceMode(raceMode) {
     shape.setRadius(radius);
     shape.setFillColor(color);
-    shape.setPosition(x, y);
+    shape.setPosition({ x, y });
 }
 
 
@@ -45,7 +45,7 @@ void Ball::calculateVelocity(const std::vector<sf::RectangleShape> &obstacles, c
 	// Vérification de la collision avec chaque obstacle
 	for (const auto& obstacle : obstacles)
 	{
-		float angle = obstacle.getRotation() * 3.14159265f / 180.f; // Conversion en radians
+		float angle = obstacle.getRotation().asRadians(); // Conversion en radians
 		float nx = std::sin(angle); // Composante x de la normale
 		float ny = -std::cos(angle); // Composante y de la normale
 

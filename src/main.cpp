@@ -37,12 +37,12 @@ void	drawArrow(sf::RenderWindow& window, sf::RectangleShape& arrowShaft, sf::Con
 	sf::Vector2f arrowShaftSize = arrowShaft.getSize();
 	sf::Vector2f arrowHeadSize = arrowHead.getPoint(1) - arrowHead.getPoint(0);
 
-	arrowShaft.setPosition(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y));
-	arrowShaft.setRotation(0);
+	arrowShaft.setPosition({ static_cast<float>(mousePos.x), static_cast<float>(mousePos.y) });
+	arrowShaft.setRotation(sf::Angle(0));
 	arrowShaft.setFillColor(sf::Color::White);
 
-	arrowHead.setPosition(static_cast<float>(mousePos.x + arrowShaftSize.x), static_cast<float>(mousePos.y + arrowShaftSize.y / 2 - arrowHeadSize.y / 2));
-	arrowHead.setRotation(0);
+	arrowHead.setPosition({ static_cast<float>(mousePos.x + arrowShaftSize.x), static_cast<float>(mousePos.y + arrowShaftSize.y / 2 - arrowHeadSize.y / 2) });
+	arrowHead.setRotation(sf::Angle(0));
 	arrowHead.setFillColor(sf::Color::White);
 
 	window.draw(arrowShaft);
@@ -76,10 +76,10 @@ void	handleEvents(sf::RenderWindow& window, bool& isPaused, std::vector<sf::Rect
             float rotation = std::atan2(dy, dx) * 180.0f / 3.14159265f;
 
             sf::RectangleShape rectangle;
-            rectangle.setPosition(static_cast<float>(startPosition.x), static_cast<float>(startPosition.y));
+            rectangle.setPosition({ static_cast<float>(startPosition.x), static_cast<float>(startPosition.y) });
             rectangle.setSize(sf::Vector2f(length, RECTANGLE_WIDTH));
-            rectangle.setOrigin(0, RECTANGLE_WIDTH / 2);
-            rectangle.setRotation(rotation);
+            rectangle.setOrigin({ 0, RECTANGLE_WIDTH / 2 });
+            rectangle.setRotation(sf::Angle(rotation));
             rectangle.setFillColor(sf::Color::Blue);
 
             obstacles.push_back(rectangle);
@@ -143,19 +143,17 @@ int main(void) {
 	int		frameCounter = 0;
 	float	timeAccumulator = 0.0f;
 
-	sf::Text fpsText;
-	fpsText.setFont(font);
+	sf::Text fpsText(font);
 	fpsText.setCharacterSize(24);
 	fpsText.setFillColor(sf::Color::White);
-	fpsText.setPosition(10, 10);
+	fpsText.setPosition({ 10, 10 });
 
 
 	bool	raceMode = false;
-	sf::Text raceModeText;
-	raceModeText.setFont(font);
+	sf::Text raceModeText(font);
 	raceModeText.setCharacterSize(24);
 	raceModeText.setFillColor(sf::Color::White);
-	raceModeText.setPosition(10, 40);
+	raceModeText.setPosition({ 10, 40});
 
 
     initializeGame(window, balls, raceMode);
@@ -168,7 +166,7 @@ int main(void) {
 
 		if (isDrawing) {
 			sf::RectangleShape tempRectangle;
-			tempRectangle.setPosition(static_cast<float>(startPosition.x), static_cast<float>(startPosition.y));
+			tempRectangle.setPosition({static_cast<float>(startPosition.x), static_cast<float>(startPosition.y)});
 			sf::Vector2i currentMousePosition = sf::Mouse::getPosition(window);
 			tempRectangle.setSize(sf::Vector2f(static_cast<float>(currentMousePosition.x - startPosition.x), static_cast<float>(currentMousePosition.y - startPosition.y)));
 			tempRectangle.setFillColor(sf::Color(100, 100, 100, 100));

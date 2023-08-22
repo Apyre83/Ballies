@@ -44,8 +44,8 @@ std::vector<sf::RectangleShape> parseConfFile(const std::string& file) {
             std::cout << "x: " << x << " y: " << y << " width: " << width << " height: " << height << " rotation: " << rotation << " r: " << r << " g: " << g << " b: " << b << std::endl;
 
             sf::RectangleShape rectangle(sf::Vector2f(width, height));
-            rectangle.setPosition(x, y);
-            rectangle.setRotation(rotation);
+            rectangle.setPosition({ x, y });
+            rectangle.setRotation(sf::Angle(rotation));
             rectangle.setFillColor(sf::Color(r, g, b));
             rectangles.push_back(rectangle);
         }

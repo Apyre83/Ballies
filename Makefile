@@ -1,56 +1,22 @@
-UP			=	"\033[A"
-CLEAR		=	"\033[K"
+# Nom de votre fichier source (sans extension)
+SOURCE = src/main src/init src/Ball
+
+# Chemin vers les bibliothèques SFML
+SFML_LIB_PATH = SFML/lib
+SFML_INCLUDE_PATH = SFML/include
+
+# Options de liaison (liens vers les bibliothèques SFML)
+SFML_LIBS = -lsfml-graphics -lsfml-window -lsfml-system
 
 
-MY_SOURCES	=	src/main.cpp	\
-				src/init.cpp	\
-				src/Ball.cpp
-
-
-MY_OBJECTS	=	$(MY_SOURCES:.cpp=.o)
 
 
 
-INCLUDES	=	include/
+# Cibles et règles
+all: $(SOURCE)
 
-STD			=	-std=c++2a
-
-FLAGS		=	$(STD) -Wall -Wextra -Werror -I $(INCLUDES)
-
-
-NAME		=	ballies
-
-
-all: $(NAME)
-
-.cpp.o:
-	@g++ $(FLAGS) -c $< -o $(<:.cpp=.o)
-	@echo $(UP)"\033[0;93mCompiling : $@ \033[0;39m                       "
-
-$(NAME): $(LIB) $(MY_OBJECTS)
-	@clear
-	@g++ $(MY_OBJECTS) -o $(NAME) -lsfml-graphics -lsfml-window -lsfml-system
-	@mkdir -p bin
-	@mv $(NAME) bin/
-	@echo "\033[0;32m ██████╗ ██████╗ ███╗   ███╗██████╗ ██╗██╗     ███████╗██████╗     ██╗"
-	@echo "██╔════╝██╔═══██╗████╗ ████║██╔══██╗██║██║     ██╔════╝██╔══██╗    ██║"
-	@echo "██║     ██║   ██║██╔████╔██║██████╔╝██║██║     █████╗  ██║  ██║    ██║"
-	@echo "██║     ██║   ██║██║╚██╔╝██║██╔═══╝ ██║██║     ██╔══╝  ██║  ██║    ╚═╝"
-	@echo "╚██████╗╚██████╔╝██║ ╚═╝ ██║██║     ██║███████╗███████╗██████╔╝    ██╗"
-	@echo " ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚═╝     ╚═╝╚══════╝╚══════╝╚═════╝     ╚═╝\033[0m"
-
-run: all
-	@./$(NAME)
+$(SOURCE): $(SOURCE).cpp
+	g++ -o $@ $< -L$(SFML_LIB_PATH) $(SFML_LIBS) -I$(SFML_INCLUDE_PATH) -Iinclude/
 
 clean:
-	@rm -f $(MY_OBJECTS)
-	@echo "\033[0;92m.o files cleaned.\033[0;39m"
-
-fclean: clean
-	@rm -f bin/$(NAME)
-	@echo "\033[0;92mEverything cleaned.\033[0;39m"
-
-re: fclean all
-
-.PHONY: all clean fclean re
-
+	del $(SOURCE).exe
