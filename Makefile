@@ -29,6 +29,7 @@ all: $(NAME)
 
 $(NAME): $(LIB) $(MY_OBJECTS)
 	@clear
+	@sudo cp SFML/lib/libsfml-*.so.3.0 /usr/lib/
 	@g++ $(MY_OBJECTS) -o $(NAME) -LSFML/lib -lsfml-graphics -lsfml-window -lsfml-system
 	@mkdir -p bin
 	@mv $(NAME) bin/
