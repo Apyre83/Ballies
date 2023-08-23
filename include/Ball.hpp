@@ -20,8 +20,8 @@ private:
 	bool			hasFallen = false;
 	bool			raceMode;
 
-	sf::Text		numberText;
 	static sf::Font	textFont;
+	sf::Text		numberText;
 
 
 public:
@@ -33,7 +33,7 @@ public:
 		window.draw(shape);
 		
 		if (hasFallen && raceMode) {
-			numberText.setPosition(x + radius - 2, y + radius - 5);
+			numberText.setPosition({ x + radius - 2, y + radius - 5 });
 			window.draw(numberText);
 		}
 	}
@@ -46,7 +46,7 @@ public:
     void	setPosition(float x, float y) {
         this->x = x;
         this->y = y;
-        shape.setPosition(x, y);
+        shape.setPosition({ x, y });
     }
     void	setVelocity(float vx, float vy) {
         velocity.x = vx;
@@ -64,7 +64,7 @@ public:
 
 		sf::FloatRect textRect = numberText.getLocalBounds();
 
-		numberText.setOrigin(textRect.width / 2.0f, textRect.height / 2.0f);
+		numberText.setOrigin({ textRect.width / 2.0f, textRect.height / 2.0f });
 	}
 
 	static void	loadFont(const std::string& fontPath);

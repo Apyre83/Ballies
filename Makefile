@@ -11,11 +11,11 @@ MY_OBJECTS	=	$(MY_SOURCES:.cpp=.o)
 
 
 
-INCLUDES	=	include/
+INCLUDES	=	-Iinclude/ -ISFML/include
 
 STD			=	-std=c++2a
 
-FLAGS		=	$(STD) -Wall -Wextra -Werror -I $(INCLUDES)
+FLAGS		=	$(STD) -Wall -Wextra -Werror $(INCLUDES) -LSFML/lib
 
 
 NAME		=	ballies
@@ -29,7 +29,7 @@ all: $(NAME)
 
 $(NAME): $(LIB) $(MY_OBJECTS)
 	@clear
-	@g++ $(MY_OBJECTS) -o $(NAME) -lsfml-graphics -lsfml-window -lsfml-system
+	@g++ $(MY_OBJECTS) -o $(NAME) -LSFML/lib -lsfml-graphics -lsfml-window -lsfml-system
 	@mkdir -p bin
 	@mv $(NAME) bin/
 	@echo "\033[0;32m ██████╗ ██████╗ ███╗   ███╗██████╗ ██╗██╗     ███████╗██████╗     ██╗"
