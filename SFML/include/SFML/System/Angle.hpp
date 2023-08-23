@@ -140,11 +140,6 @@ public:
     ////////////////////////////////////////////////////////////
     // NOLINTNEXTLINE(readability-identifier-naming)
     static const Angle Zero; //!< Predefined 0 degree angle value
-    constexpr explicit Angle(float degrees); // Allow me to use this constructor in public for main.cpp, Ball.cpp
-
-private:
-    friend constexpr Angle degrees(float angle);
-    friend constexpr Angle radians(float angle);
 
     ////////////////////////////////////////////////////////////
     /// \brief Construct from a number of degrees
@@ -155,6 +150,12 @@ private:
     /// \param degrees Angle in degrees
     ///
     ////////////////////////////////////////////////////////////
+    constexpr explicit Angle(float degrees); // This was private at the beginning, but I changed it to public to be able to use it in Ball.cpp
+
+
+private:
+    friend constexpr Angle degrees(float angle);
+    friend constexpr Angle radians(float angle);
 
     ////////////////////////////////////////////////////////////
     // Member data
