@@ -1,5 +1,9 @@
 #include "Ballies.h"
 
+float TIME_FACTOR = 5.0f;
+float BOUNCE = 0.7f;
+float GRAVITY = 2.0f;
+
 void	calculateBallsPosition(std::vector<Ball>& balls, float dt, std::vector<sf::RectangleShape>& obstacles, sf::RenderWindow& window, unsigned int &lastBallNumber)
 {
 	for (auto& ball : balls) {
@@ -96,6 +100,36 @@ void	handleEvents(sf::RenderWindow& window, bool& isPaused, std::vector<sf::Rect
 			lastBallNumber = 1;
 			initializeGame(window, balls, raceMode);
 		}
+
+        if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Num1) {
+            TIME_FACTOR += 0.5f;
+        }
+        if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Num2) {
+            if (TIME_FACTOR > 0.5f)
+            TIME_FACTOR -= 0.5f;
+        }
+
+        if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Num3) {
+            BOUNCE += 0.01f;
+        }
+        if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Num4) {
+            if (BOUNCE > 0.01f)
+            BOUNCE -= 0.01f;
+        }
+
+        if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Num5) {
+            GRAVITY += 0.1f;
+        }
+        if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Num6) {
+            if (GRAVITY > 0.1f)
+            GRAVITY -= 0.1f;
+        }
+
+        if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Q) {
+            TIME_FACTOR = 5.0f;
+            BOUNCE = 0.7f;
+            GRAVITY = 2.0f;
+        }
     }
 }
 
@@ -106,7 +140,7 @@ int main(void) {
 	Ball::loadFont("res/race.ttf");
 
     sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
-    sf::RenderWindow window(desktop, "Kamlot", sf::Style::Fullscreen);
+    sf::RenderWindow window(desktop, "Ballies", sf::Style::Fullscreen);
 
     std::vector<sf::RectangleShape> obstacles = parseConfFile("conf");
     std::vector<Ball> balls;
@@ -155,6 +189,15 @@ int main(void) {
 	raceModeText.setFillColor(sf::Color::White);
 	raceModeText.setPosition({ 10, 40 });
 
+    sf::Text    settingsText(font);
+    settingsText.setCharacterSize(24);
+    settingsText.setFillColor(sf::Color::White);
+    settingsText.setPosition({ 10, 1000 });
+
+    sf::Text    keysText(font, "R: Reset\nD: Delete all obstacles\nSpace: Pause\nM: Switch mode\nQ: Reset settings\nEsc: Quit\n'1': Increase time factor\n'2': Decrease time factor\n'3': Increase bounce\n'4': Decrease bounce\n'5': Increase gravity\n'6': Decrease gravity", 24);
+    keysText.setFillColor(sf::Color::White);
+    keysText.setPosition({ 10, 100 });
+
 
     initializeGame(window, balls, raceMode);
 
@@ -190,11 +233,9 @@ int main(void) {
 			timeAccumulator = 0.0f;
 		}
 
-
 		if (!isPaused) {
 			calculateBallsPosition(balls, dt, obstacles, window, lastBallNumber);
 		}
-
 
         window.clear();
 
@@ -204,9 +245,13 @@ int main(void) {
 		else
 			raceModeText.setString("MODE: Sandbox");
 
+
+        settingsText.setString("TIME_FACTOR: " + std::to_string(TIME_FACTOR) + "\nBOUNCE: " + std::to_string(BOUNCE) + "\nGRAVITY: " + std::to_string(GRAVITY));
+
+        window.draw(keysText);
 		window.draw(raceModeText);
 		window.draw(fpsText);
-
+        window.draw(settingsText);
 
         for (auto& ball : balls)
             ball.draw(window);

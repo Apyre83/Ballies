@@ -1,58 +1,81 @@
-UP			=	"\033[A"
-CLEAR		=	"\033[K"
 
+MY_SOURCES	=	main.cpp	\
+				init.cpp	\
+				Ball.cpp
 
-MY_SOURCES	=	src/main.cpp	\
-				src/init.cpp	\
-				src/Ball.cpp
-
+ifeq ($(OS),Windows_NT)
+	MY_SOURCES	:=	$(addprefix src\,$(MY_SOURCES))
+else
+	MY_SOURCES	:=	$(addprefix src/,$(MY_SOURCES))
+endif
 
 MY_OBJECTS	=	$(MY_SOURCES:.cpp=.o)
-
 
 
 INCLUDES	=	-Iinclude/ -ISFML/include
 
 STD			=	-std=c++2a
 
-FLAGS		=	$(STD) -Wall -Wextra -Werror $(INCLUDES) -LSFML/lib
+FLAGS		=	$(STD) -Wall -Wextra -Werror $(INCLUDES)
+ifeq ($(OS),Windows_NT)
+	FLAGS	+=	-LSFML/lib_win
+else
+	FLAGS	+=	-LSFML/lib_linux
+endif
 
 
-NAME		=	ballies
-PATH_BIN	=	bin/$(NAME)
+NAME		=	ballies.exe
+ifeq ($(OS),Windows_NT)
+	PATH_BIN	=	bin\$(NAME)
+else
+	PATH_BIN	=	bin/$(NAME)
+endif
 
 all: $(PATH_BIN)
 
 .cpp.o:
 	@g++ $(FLAGS) -c $< -o $(<:.cpp=.o)
-	@echo $(UP)"\033[0;93mCompiling : $@ \033[0;39m                       "
+	@echo Compiling : $<
 
 $(PATH_BIN): $(LIB) $(MY_OBJECTS)
+ifeq ($(OS),Windows_NT)
+	@cls
+	@g++ $(MY_OBJECTS) -o $(NAME) -LSFML/lib_win -lsfml-graphics -lsfml-window -lsfml-system
+	@if not exist bin mkdir bin
+	@move $(NAME) bin/
+else
 	@clear
-	@echo "\033[34mPassword required to move the SFML libraries to /usr/lib/"
-	@sudo cp SFML/lib/libsfml-*.so.3.0 /usr/lib/
+	@echo "Password required to move the SFML libraries to /usr/lib/"
+	@sudo cp SFML/lib_linux/libsfml-*.so.3.0 /usr/lib/
 	@clear
-	@g++ $(MY_OBJECTS) -o $(NAME) -LSFML/lib -lsfml-graphics -lsfml-window -lsfml-system
+	@g++ $(MY_OBJECTS) -o $(NAME) -LSFML/lib_linux -lsfml-graphics -lsfml-window -lsfml-system
 	@mkdir -p bin
 	@mv $(NAME) bin/
-	@echo "\033[0;32m ██████╗ ██████╗ ███╗   ███╗██████╗ ██╗██╗     ███████╗██████╗     ██╗"
-	@echo "██╔════╝██╔═══██╗████╗ ████║██╔══██╗██║██║     ██╔════╝██╔══██╗    ██║"
-	@echo "██║     ██║   ██║██╔████╔██║██████╔╝██║██║     █████╗  ██║  ██║    ██║"
-	@echo "██║     ██║   ██║██║╚██╔╝██║██╔═══╝ ██║██║     ██╔══╝  ██║  ██║    ╚═╝"
-	@echo "╚██████╗╚██████╔╝██║ ╚═╝ ██║██║     ██║███████╗███████╗██████╔╝    ██╗"
-	@echo " ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚═╝     ╚═╝╚══════╝╚══════╝╚═════╝     ╚═╝"
-	@echo "\033[0;92mSee $(PATH_BIN) for the executable.\033[0m"
+endif
+
+	@echo Compiled !
+	@echo See $(PATH_BIN) for the executable.
 
 run: all
 	@./$(PATH_BIN)
 
 clean:
+ifeq ($(OS),Windows_NT)
+	@del $(MY_OBJECTS)
+else
 	@rm -f $(MY_OBJECTS)
-	@echo "\033[0;92m.o files cleaned.\033[0;39m"
+endif
+
+	@echo .o files cleaned.
 
 fclean: clean
+ifeq ($(OS),Windows_NT)
+	@del $(PATH_BIN)
+else
 	@rm -f $(PATH_BIN)
-	@echo "\033[0;92mEverything cleaned.\033[0;39m"
+endif
+
+	@echo Everything cleaned.
 
 re: fclean all
 
